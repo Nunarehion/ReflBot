@@ -1,0 +1,12 @@
+{
+  "welcome": {
+    "media": null,
+    "text": "Привет",
+    "keyboard": "kbPageStart"
+  },
+  "user_list": {
+    "media": null,
+    "text": "Список зарегистрированных пользователей:\n\n{user_list_text}",
+    "keyboard": null
+  }
+}

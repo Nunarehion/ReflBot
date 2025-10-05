@@ -1,0 +1,35 @@
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: reflbot_mongo
+    restart: always
+    ports:
+    - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - reflnet
+
+  telegram_bot:
+    container_name: reflbot_app
+    build:
+      context: ./servises/bot
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+    volumes:
+      - ./servises/bot:/app
+    ports:
+      - "3001:3000"
+    networks:
+      - reflnet
+
+volumes:
+  mongo_data:
+
+networks:
+  reflnet:
+    driver: bridge

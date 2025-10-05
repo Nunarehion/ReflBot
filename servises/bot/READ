@@ -1,0 +1,10 @@
+source .venv/bin/activate
+
+docker-compose up --build -d
+
+docker compose -f docker-compose.migrations.yml up --build
+
+sqlalchemy.url = postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+
+docker compose run --rm telegram_bot sh -c "python -m alembic init alembic && python -m alembic revision --autogenerate -m 'initial_migration'"
+docker compose run --rm telegram_bot sh -c "python -m alembic upgrade head"
