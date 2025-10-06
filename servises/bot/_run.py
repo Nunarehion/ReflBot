@@ -17,7 +17,11 @@ async def on_startup(dispatcher: Dispatcher):
         client = await create_mongo_client()
         db = await get_mongo_db(client)
         db_service = DatabaseService(db)
-        # await db_service.init_indexes()
+        # Инициализация валидаторов и индексов (идемпотентно)
+        try:
+            await db_service.init_business_schemas_and_indexes()
+        except Exception as e:
+            logging.warning(f"Business schema/index init warning: {e}")
         dispatcher['mongo_client'] = client
         dispatcher['db_service'] = db_service
         logging.info("Mongo client and DatabaseService created successfully.")

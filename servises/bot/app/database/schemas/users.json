@@ -1,0 +1,39 @@
+{
+  "collection": "users",
+  "validator": {
+    "$jsonSchema": {
+      "bsonType": "object",
+      "required": [
+        "telegram_id",
+        "phone_number",
+        "referral_code",
+        "points",
+        "is_activated",
+        "registration_date"
+      ],
+      "properties": {
+        "telegram_id": { "bsonType": ["long", "int"] },
+        "phone_number": { "bsonType": "string" },
+        "referral_code": { "bsonType": "string", "pattern": "^[A-Z0-9]{6,8}$" },
+        "referrer_id": { "bsonType": ["long", "int", "null"] },
+        "points": { "bsonType": ["int", "long"] },
+        "is_activated": { "bsonType": "bool" },
+        "registration_date": { "bsonType": "date" },
+        "refcode_deadline": { "bsonType": ["date", "null"] },
+        "username": { "bsonType": ["string", "null"] },
+        "full_name": { "bsonType": ["string", "null"] }
+      }
+    }
+  },
+  "validationLevel": "moderate",
+  "indexes": [
+    { "keys": [["telegram_id", 1]], "options": { "unique": true } },
+    { "keys": [["phone_number", 1]], "options": { "unique": true } },
+    { "keys": [["referral_code", 1]], "options": { "unique": true } },
+    { "keys": [["referrer_id", 1]] },
+    { "keys": [["registration_date", 1]] },
+    { "keys": [["refcode_deadline", 1]] }
+  ]
+}
+
+

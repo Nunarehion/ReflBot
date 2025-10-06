@@ -1,0 +1,24 @@
+{
+  "collection": "referrals",
+  "validator": {
+    "$jsonSchema": {
+      "bsonType": "object",
+      "required": ["referrer_id", "referred_user_id", "status", "created_at"],
+      "properties": {
+        "referrer_id": { "bsonType": ["long", "int"] },
+        "referred_user_id": { "bsonType": ["long", "int"] },
+        "status": { "enum": ["pending", "activated"] },
+        "created_at": { "bsonType": "date" },
+        "activated_at": { "bsonType": ["date", "null"] }
+      }
+    }
+  },
+  "validationLevel": "moderate",
+  "indexes": [
+    { "keys": [["referrer_id", 1], ["referred_user_id", 1]], "options": { "unique": true } },
+    { "keys": [["status", 1]] },
+    { "keys": [["referrer_id", 1]] }
+  ]
+}
+
+

@@ -1,0 +1,20 @@
+{
+  "collection": "admins",
+  "validator": {
+    "$jsonSchema": {
+      "bsonType": "object",
+      "required": ["telegram_id"],
+      "properties": {
+        "telegram_id": { "bsonType": ["long", "int"] },
+        "username": { "bsonType": ["string", "null"] },
+        "access_level": { "enum": ["full", "limited"] }
+      }
+    }
+  },
+  "validationLevel": "moderate",
+  "indexes": [
+    { "keys": [["telegram_id", 1]], "options": { "unique": true } }
+  ]
+}
+
+

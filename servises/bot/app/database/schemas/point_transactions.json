@@ -1,0 +1,24 @@
+{
+  "collection": "point_transactions",
+  "validator": {
+    "$jsonSchema": {
+      "bsonType": "object",
+      "required": ["user_id", "amount", "transaction_type", "reason", "timestamp"],
+      "properties": {
+        "user_id": { "bsonType": ["long", "int"] },
+        "amount": { "bsonType": ["int", "long"] },
+        "transaction_type": { "enum": ["начисление", "списание", "обнуление"] },
+        "reason": { "bsonType": "string" },
+        "ref": { "bsonType": ["object", "null"] },
+        "timestamp": { "bsonType": "date" }
+      }
+    }
+  },
+  "validationLevel": "moderate",
+  "indexes": [
+    { "keys": [["user_id", 1], ["timestamp", -1]] },
+    { "keys": [["reason", 1]] }
+  ]
+}
+
+
