@@ -26,5 +26,13 @@ for _, callback_name, _ in pkgutil.iter_modules(callback_module.__path__):
     if hasattr(callback_module_instance, 'router'):
         routers.append(callback_module_instance.router)
 
+# Подключаем FSM модули
+try:
+    from app.fsm.registration import router as registration_router
+    routers.append(registration_router)
+    logger.info("FSM registration router loaded")
+except ImportError as e:
+    logger.warning(f"Failed to load FSM registration router: {e}")
+
 logger.info(f"Loaded routers: {routers}")
 router.include_routers(*routers)
