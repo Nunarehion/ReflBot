@@ -19,12 +19,18 @@ async def get_users_command(message: types.Message, db_service: DatabaseService)
         
     user_list_items = []
     for user in all_users:
-        username = f"@{user.username}" if user.username else "Нет username"
-        full_name = user.full_name if user.full_name else "Нет имени"
-        premium_status = "⭐ Premium" if user.is_premium else ""
+        username = f"@{user.get('username')}" if user.get('username') else "Нет username"
+        full_name = user.get('full_name') or "Нет имени"
+        premium_status = "⭐ Premium" if user.get('is_premium') else ""
         user_list_items.append(
-            f"ID: {user.user_id}\nИмя: {full_name}\nUsername: {username} {premium_status}"
+            "ID: {id}\nИмя: {name}\nUsername: {username} {premium}".format(
+                id=user.get('user_id'),
+                name=full_name,
+                username=username,
+                premium=premium_status
+            )
         )
     
     user_list_text = "\n\n".join(user_list_items)
-    await send_message(message, "user_list", db_service=db_service, user_list_text=user_list_text)
+    await message.answer(user_list_text)
+
