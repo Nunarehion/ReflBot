@@ -11,5 +11,5 @@ class DBAdminFilter(BaseFilter):
         if not message.from_user:
             return False
 
-        user = await self.db_service.get_user_by_id(message.from_user.id)
+        user = await self.db_service.get_user_by_telegram_id(message.from_user.id)
         return bool(user and user.get("is_admin"))
