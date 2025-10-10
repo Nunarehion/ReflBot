@@ -4,10 +4,11 @@ from aiogram.filters import Command
 from app.event.router import logger
 from app.database.service import DatabaseService
 from app.messages.message import send_message
+from app.filters.Admin import DBAdminFilter
 
 router = Router()
 
-@router.message(Command("users"))
+@router.message(Command("users"),DBAdminFilter())
 async def get_users_command(message: types.Message, db_service: DatabaseService):
     logger.info(f"Получена команда /users от пользователя {message.from_user.id}")
     
