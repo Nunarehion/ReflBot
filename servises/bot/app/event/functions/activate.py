@@ -2,7 +2,7 @@ from typing import Optional, Dict, Any
 from aiogram import types
 from app.database.service import DatabaseService
 
-async def activate_user_from_message_by_tg_id(
+async def activate_user(
     message: types.Message,
     db_service: DatabaseService,
     ) -> Optional[Dict[str, Any]]:
