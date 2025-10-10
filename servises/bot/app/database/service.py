@@ -382,4 +382,56 @@ class DatabaseService:
             return True
         except Exception:
             return False
+
+    async def get_admin_by_telegram_id(self, telegram_id: int) -> Optional[Dict[str, Any]]:
+        """
+        Возвращает документ администратора по telegram_id или None.
+        """
+        return await self.col_admins.find_one(
+            {"telegram_id": int(telegram_id)},
+            projection={"_id": False}
+        )
+
+    async def add_admin(
+        self,
+        telegram_id: int,
+        username: Optional[str] = None,
+        access_level: str = "full"
+    ) -> Dict[str, Any]:
+        """
+        Добавляет администратора в коллекцию admins.
+        Возвращает вставленный документ (без _id).
+        Бросает ValueError при некорректном access_level,
+        DuplicateKeyError при существующем telegram_id.
+        """
+        if access_level not in ("full", "limited"):
+            raise ValueError("access_level must be 'full' or 'limited'")
+
+        doc: Dict[str, Any] = {
+            "telegram_id": int(telegram_id),
+            "username": username,
+            "access_level": access_level
+        }
+
+        try:
+            result = await self.col_admins.insert_one(doc)
+        except DuplicateKeyError:
+            raise DuplicateKeyError(f"Admin with telegram_id {telegram_id} already exists")
+        return {
+            "telegram_id": doc["telegram_id"],
+            "username": doc.get("username"),
+            "access_level": doc["access_level"]
+        }
         
+    async def remove_admin_and_return(self, telegram_id: int) -> Optional[Dict[str, Any]]:
+        """
+        Находит и удаляет админа, возвращая удалённый документ или None
+        """
+        try:
+            doc = await self.col_admins.find_one_and_delete(
+                {"telegram_id": int(telegram_id)},
+                projection={"_id": False}
+            )
+        except PyMongoError:
+            raise
+        return doc
