@@ -129,7 +129,7 @@ class DatabaseService:
         """Получает пользователя по telegram_id."""
         return await self.col_users.find_one({"telegram_id": telegram_id}, projection={"_id": False})
         
-        async def get_user_by_username(self, username: str) -> Optional[Dict[str, Any]]:
+    async def get_user_by_username(self, username: str) -> Optional[Dict[str, Any]]:
         """Получает пользователя по @username."""
         return await self.col_users.find_one({"username": username}, projection={"_id": False})
 
