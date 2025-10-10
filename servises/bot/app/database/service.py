@@ -7,6 +7,7 @@ import logging
 from datetime import datetime, timedelta
 import random
 import string
+import uuid
 
 class DatabaseService:
     def __init__(self, db: AsyncIOMotorDatabase):
@@ -99,11 +100,7 @@ class DatabaseService:
     #-------USER-------#
     async def generate_referral_code(self) -> str:
         """Генерирует уникальный реферальный код."""
-        while True:
-            code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-            existing = await self.col_users.find_one({"referral_code": code})
-            if not existing:
-                return code
+        return str(uuid.uuid4())
 
     async def add_user(self, telegram_id: int, phone_number: str, username: Optional[str] = None, full_name: Optional[str] = None) -> Dict[str, Any]:
         """Создаёт нового пользователя."""
