@@ -3,17 +3,6 @@ from aiogram import types
 from app.database.service import DatabaseService
 from app.utils.phone import validate_phone_number, normalize_phone_number
 
-def _tg_id_from_arg(arg: str, db_service: DatabaseService) -> Optional[int]:
-    if arg.isdigit():
-        return int(arg)
-    if validate_phone_number(arg):
-        phone = normalize_phone_number(arg)
-        user = db_service.get_user_by_phone(phone)  # sync call assumed; wrapped below for async
-        return user.get("telegram_id") or user.get("id") if user else None
-    username = arg.lstrip("@")
-    user = db_service.get_user_by_username(username)
-    return user.get("telegram_id") or user.get("id") if user else None
-
 async def activate_user(
     message: types.Message,
     db_service: DatabaseService,
@@ -31,16 +20,23 @@ async def activate_user(
             return None
         arg0 = args.split()[0]
 
-        if arg0.isdigit():
-            tg_id = int(arg0)
-        elif validate_phone_number(arg0):
-            phone = normalize_phone_number(arg0)
-            user = await db_service.get_user_by_phone(phone)
-            tg_id = user.get("telegram_id") or user.get("id") if user else None
-        else:
-            username = arg0.lstrip("@")
-            user = await db_service.get_user_by_username(username)
-            tg_id = user.get("telegram_id") or user.get("id") if user else None
+        kind = (
+            "id" if arg0.isdigit()
+            else "phone" if validate_phone_number(arg0)
+            else "username"
+        )
+
+        match kind:
+            case "id":
+                tg_id = int(arg0)
+            case "phone":
+                phone = normalize_phone_number(arg0)
+                user = await db_service.get_user_by_phone(phone)
+                tg_id = user.get("telegram_id")
+            case "username":
+                username = arg0.lstrip("@")
+                user = await db_service.get_user_by_username(username)
+                tg_id = user.get("telegram_id")
 
         if not tg_id:
             return None
